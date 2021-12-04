@@ -51,21 +51,9 @@ namespace DogApi.Controllers
         {
             try
             {
-
-           
-                // Add custom model validation error
-                var repeatedDog = await _dbContext.Dogs.FirstOrDefaultAsync<Dog>(e => dog.Name == e.Name);
-
-                if (repeatedDog != null)
-                {
-                    ModelState.AddModelError("Name", "Dog Name already in exists");
-                    return BadRequest(ModelState);
-                }
-
-               await _dbContext.Dogs.AddAsync(dog);
+                await _dbContext.Dogs.AddAsync(dog);
                 await _dbContext.SaveChangesAsync();
-                return StatusCode(201);
-    
+                return StatusCode(201);    
             }
             catch (Exception)
             {
