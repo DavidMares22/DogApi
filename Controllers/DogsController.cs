@@ -1,4 +1,5 @@
-﻿using DogApi.Data;
+﻿using AutoMapper;
+using DogApi.Data;
 using DogApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,10 +18,12 @@ namespace DogApi.Controllers
     {
 
         private ApiDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public DogsController(ApiDbContext dbContext)
+        public DogsController(ApiDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
         // GET: /dogs
@@ -66,17 +69,14 @@ namespace DogApi.Controllers
             }
         }
 
-        // GET api/<DogsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+       
 
         // POST api/<DogsController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Dog dog)
+        public async Task<IActionResult> Post([FromBody] CreateDog createDog)
         {
+
+            var dog = _mapper.Map<Dog>(createDog);
             try
             {
                 await _dbContext.Dogs.AddAsync(dog);
@@ -88,17 +88,6 @@ namespace DogApi.Controllers
                 return StatusCode(500, "Internal Server Error. Please try again later");
             }
         }
-
-        // PUT api/<DogsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<DogsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+ 
     }
 }

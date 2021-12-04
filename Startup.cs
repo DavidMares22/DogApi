@@ -1,3 +1,4 @@
+using DogApi.Configurations;
 using DogApi.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +14,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+
 
 namespace DogApi
 {
@@ -28,7 +31,7 @@ namespace DogApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddAutoMapper(typeof(MapperInitilizer));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

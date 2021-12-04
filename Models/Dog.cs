@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace DogApi.Models
 {
-    public class Dog
+
+    public class CreateDog
     {
 
-        public int Id { get; set; }
         [Required]
         [MaxLength(25)]
         [MinLength(1)]
@@ -27,5 +27,12 @@ namespace DogApi.Models
         [Required]
         [Range(1, 60)]
         public int Weight { get; set; }
+    }
+    public class Dog : CreateDog
+    {
+
+        public int Id { get; set; }
+        
+      
     }
 }
