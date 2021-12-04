@@ -1,6 +1,7 @@
 ﻿using DogApi.Data;
 using DogApi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,9 +25,17 @@ namespace DogApi.Controllers
 
         // GET: /dogs
         [HttpGet]
-        public IEnumerable<Dog> Get()
+        public async Task<IActionResult> GetDogs()
         {
-            return _dbContext.Dogs;
+            try
+            {
+                var Dogs = await _dbContext.Dogs.ToListAsync();
+                return Ok(Dogs);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal Server Error. Please try again later");
+            }
         }
 
         // GET api/<DogsController>/5
@@ -38,8 +47,30 @@ namespace DogApi.Controllers
 
         // POST api/<DogsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] Dog dog)
         {
+            try
+            {
+
+           
+                // Add custom model validation error
+                var repeatedDog = await _dbContext.Dogs.FirstOrDefaultAsync<Dog>(e => dog.Name == e.Name);
+
+                if (repeatedDog != null)
+                {
+                    ModelState.AddModelError("Name", "Dog Name already in exists");
+                    return BadRequest(ModelState);
+                }
+
+               await _dbContext.Dogs.AddAsync(dog);
+                await _dbContext.SaveChangesAsync();
+                return StatusCode(201);
+    
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Internal Server Error. Please try again later");
+            }
         }
 
         // PUT api/<DogsController>/5

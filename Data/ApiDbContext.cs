@@ -18,6 +18,11 @@ namespace DogApi.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+
+            builder.Entity<Dog>(entity => {
+                entity.HasIndex(e => e.Name).IsUnique();
+            });
+
             builder.Entity<Dog>().HasData(
                 new Dog
                 {

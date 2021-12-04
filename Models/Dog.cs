@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DogApi.Utilities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -14,6 +15,7 @@ namespace DogApi.Models
         [Required]
         [MaxLength(25)]
         [MinLength(1)]
+        [NameDogUnique]
         public string Name { get; set; }
         [Required]
         [MaxLength(25)]
