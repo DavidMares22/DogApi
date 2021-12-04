@@ -25,12 +25,40 @@ namespace DogApi.Controllers
 
         // GET: /dogs
         [HttpGet]
-        public async Task<IActionResult> GetDogs()
+        public async Task<IActionResult> GetDogs(int? pageNumber, int? pageSize, string? attribute, string? order)
         {
+
+            int currentPageNumber = pageNumber ?? 1;
+            int currentPageSize = pageSize ?? 5;
+            string sortAttribute = attribute ?? String.Empty;
+            string sortOrder = order ?? "desc";
+
             try
             {
-                var Dogs = await _dbContext.Dogs.ToListAsync();
-                return Ok(Dogs);
+
+                List<Dog> Dogs = await _dbContext.Dogs.ToListAsync();
+                                  
+                var results = Dogs.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize);
+
+                switch (sortAttribute.ToLower())
+                {
+                    case "color":
+                        results = sortOrder=="desc"? results.OrderByDescending(c => c.Color): results.OrderBy(c => c.Color);
+                        break;
+                    case "name":
+                        results = sortOrder == "desc" ? results.OrderByDescending(c => c.Name): results.OrderBy(c => c.Name);
+                        break;
+                    case "weight":
+                        results = sortOrder == "desc" ? results.OrderByDescending(c => c.Weight) : results.OrderBy(c => c.Weight);
+                        break;
+                    case "tail_length":
+                        results = sortOrder == "desc" ? results.OrderByDescending(c => c.Tail_length) : results.OrderBy(c => c.Tail_length);
+                        break;
+                    default:
+                        results = sortOrder == "desc" ? results.OrderByDescending(c => c.Id) : results.OrderBy(c => c.Id);
+                        break;
+                }
+                return Ok(results);
             }
             catch (Exception)
             {
