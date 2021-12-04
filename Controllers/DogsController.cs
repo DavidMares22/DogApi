@@ -76,9 +76,9 @@ namespace DogApi.Controllers
         public async Task<IActionResult> Post([FromBody] CreateDog createDog)
         {
 
-            var dog = _mapper.Map<Dog>(createDog);
             try
             {
+                var dog = _mapper.Map<Dog>(createDog);
                 await _dbContext.Dogs.AddAsync(dog);
                 await _dbContext.SaveChangesAsync();
                 return StatusCode(201);    

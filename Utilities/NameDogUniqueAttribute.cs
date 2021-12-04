@@ -12,8 +12,9 @@ namespace DogApi.Utilities
         protected override ValidationResult IsValid(
             object value, ValidationContext validationContext)
         {
+            var text = value?.ToString()?? String.Empty;
             var _context = (ApiDbContext)validationContext.GetService(typeof(ApiDbContext));
-            var entity = _context.Dogs.SingleOrDefault(e => e.Name == value.ToString());
+            var entity = _context.Dogs.SingleOrDefault(e => e.Name == text);
 
             if (entity != null)
             {
