@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-
+using AspNetCoreRateLimit;
 
 namespace DogApi
 {
@@ -38,6 +38,9 @@ namespace DogApi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DogApi", Version = "v1" });
             });
             services.AddDbContext<ApiDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ApiDatabase")));
+            services.AddMemoryCache();
+            services.ConfigureRateLimiting();
+            services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,8 +55,9 @@ namespace DogApi
 
             app.UseHttpsRedirection();
 
-            app.UseRouting();
+            app.UseIpRateLimiting();
 
+            app.UseRouting();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
